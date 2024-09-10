@@ -1,0 +1,23 @@
+[
+    {
+      "id": "1",
+      "name": "Đà Lạt",
+      "image": "https://sakos.vn/wp-content/uploads/2023/04/da-lat-noi-cat-giu-nhung-buc-anh-song-ao-dep-nhat-3.jpg",
+      "rating": 4.7,
+      "reviews": 1450
+    },
+    {
+      "id": "2",
+      "name": "Nha Trang",
+      "image": "https://ik.imagekit.io/tvlk/blog/2023/07/bai-bien-nha-trang-5.jpg?tr=dpr-2,w-675",
+      "rating": 4.8,
+      "reviews": 650
+    },
+    {
+      "id": "3",
+      "name": "Phú Quốc",
+      "image": "https://statics.vntrip.vn/data-v2/data-guide/img_content/1470302452_anh-5.jpg",
+      "rating": 4.9,
+      "reviews": 550
+    }
+  ]
