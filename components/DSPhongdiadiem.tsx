@@ -9,39 +9,71 @@ import { Link } from 'expo-router';
 import { Listingtype } from "@/types/listingtype";
 import { useFocusEffect } from '@react-navigation/native';
 import axios from "axios";
+
+interface Luttru 
+  {
+  username: string,
+  password: string,
+  image:string,
+  id: string,
+  bookmark: [
+    {
+      idphong: string
+    }
+  ],
+  history: [
+    {
+      idphong: string
+    }
+  ],
+}
 type Props = {
     listings: any[];
     diadiem: string;
   };
+
+
 const DSphong = ({listings,diadiem}:Props)=>{
-  const [loadlist,setLoadlist] = useState<Listingtype[]>([])
+const [loadlist,setLoadlist] = useState<Luttru>()
   const [loading, setLoading] = useState(false);
-  const getAPI= async ()=>{
-    await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh')
+  // const getAPI= async ()=>{
+  //   await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh')
+  //   .then(res=>{
+  //     res.data.map((item:any)=>{
+  //           setLoadlist((e)=>[...e,item])
+  //     })
+  //   })
+  // }
+  const getAPIuser= async ()=>{
+    await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+diadiem)
     .then(res=>{
-      res.data.map((item:any)=>{
-            setLoadlist((e)=>[...e,item])
-      })
+            setLoadlist(res.data)
     })
-   
+  }
+  const checkbookmark=(id:string)=>{
+    const x = loadlist?.bookmark.find((item=>item.idphong == id))
+    if(x == undefined){
+      return false
+    }
+  return true
   }
 useEffect(()=>{
   console.log('Update Listing');
   setLoading(true);
-  getAPI()
+  getAPIuser()
   setTimeout(() => {
   setLoading(false)}, 200)}
 ,[]);
  
 const renderItems:ListRenderItem<Listingtype> = ({item})=>{
     return(
-        <Link  href={{pathname:'/listing/linkdetail/',params:{id:item.id}} } asChild key={item.id}>
+        <Link  href={{pathname:'/listing/linkdetail/',params:{idphong:diadiem,id:item.id}} } asChild key={item.id}>
             <TouchableOpacity style={styles.item}>
                 <View>
                     <Image source={{uri:item.image}} style={styles.image}></Image>
                     <Text style={styles.itemTxt}  numberOfLines={3} ellipsizeMode="tail">{item.name}</Text>
                 </View>
-                <View style={item.bookmark?styles.bookmark1:styles.bookmark}>
+                <View style={checkbookmark(item.id)?styles.bookmark1:styles.bookmark}>
                     <Ionicons name="bookmark" size={20}></Ionicons>
                 </View> 
                 <View
@@ -96,17 +128,17 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Colors.white,
       },
-      bookmark1: {
-        position: "absolute",
-        display:"flex",
-        top: 185,
-        right: 30,
-        backgroundColor: Colors.primaryColor,
-        padding: 10,
-        borderRadius: 30,
-        borderWidth: 2,
-        borderColor: Colors.white,
-      },
+        bookmark1: {
+          position: "absolute",
+          display:"flex",
+          top: 185,
+          right: 30,
+          backgroundColor: Colors.primaryColor,
+          padding: 10,
+          borderRadius: 30,
+          borderWidth: 2,
+          borderColor: Colors.white,
+        },
       itemTxt: {
         fontSize: 16,
         fontWeight: "600",

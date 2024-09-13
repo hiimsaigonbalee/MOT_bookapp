@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Listingtype } from "@/types/listingtype";
 import listingData from "@/data/hinhanh.json";
@@ -28,41 +28,71 @@ import Animated, {
   useScrollViewOffset,
 } from "react-native-reanimated";
 import axios from "axios";
+import Bookmark from "../(tabs)/Historys";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
 
+ interface Luttru 
+  {
+  username: string,
+  password: string,
+  image:string,
+  id: string,
+  bookmark: [
+    {
+      idphong: string
+    }
+  ],
+  history: [
+    {
+      idphong: string
+    }
+  ]
+}
+
+ 
 
 const ListingDetails = () => {
-  const { id } = useLocalSearchParams();
+  const { idphong } = useLocalSearchParams();
+  const {id} = useLocalSearchParams()
   const listing: Listingtype = (listingData as Listingtype[]).find(
     (item) => item.id === id
   );
-  const checkbookmark =  async ()=>{
-    const a = await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh/'+id)
-    .then(res=>{
-      return res.data
+  const [lutru,setLuutru] = useState<Luttru>()
+  const bookphong = async ()=>{
+    const a = await axios.post('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+idphong,{
+      history:{
+        idphong:id,
+        macode:String(Math.floor(Math.random() * 99999) + 10000)
+      }
     })
-    if(a.bookmark == false){
-      axios.put('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh/'+id,
-      {
-        bookmark:true
-      })
-      .then(res=>{Alert.alert('Thông Báo','Đã Thêm Vào Bookmark')})
-      }
-      if(a.bookmark ==true){
-          axios.put('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh/'+id,
-          {
-            bookmark:false
-          })
-          .then(res=>{Alert.alert('Thông Báo','Đã Xóa Khỏi Bookmark')})
-      }
+  }
+  const getAPIcheckbookmark =  async ()=>{
+    const a = await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+idphong)
+    .then(res=>{
+        setLuutru(res.data)
+    })
     }
-    
-
-      
-    
-
+  const checkbookmark = ()=>{
+    const x  = lutru?.bookmark.find((item)=>item.idphong == id)
+    if(x == undefined){
+      let y = lutru?.bookmark
+      y?.push({"idphong":`${id}`})
+      axios.put('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+idphong,{
+          bookmark:y
+      })
+      .then(res=>{
+        Alert.alert('Thông báo','Đã thêm Vào Bookmark')
+      })
+    }
+    else{
+      Alert.alert('Thông báo','Đã có trong Bookmark')
+    }
+  }
+  useEffect(()=>{
+    getAPIcheckbookmark()
+  })
   const router = useRouter();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
@@ -201,7 +231,7 @@ const ListingDetails = () => {
 
       <Animated.View style={styles.footer} entering={SlideInDown.delay(200)}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => {bookphong}}
           style={[styles.footerBtn, styles.footerBookBtn]}
         >
           <Text style={styles.footerBtnTxt}>Book Now</Text>

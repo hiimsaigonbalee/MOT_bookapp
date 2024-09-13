@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactEventHandler, useEffect } from "react";
 import { View,Text,StyleSheet,TouchableOpacity,Image } from "react-native"; 
-import { Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -25,15 +25,25 @@ interface Listing {
   location: string;
   category: string;
 }
-const Home = ()=>{
+
+
+const Home = ({route}:any)=>{
+  const {username} = route.params
+  const {id} = route.params
   const headerHeight = useHeaderHeight()
   const [diadiems, setdiadiem] = useState("All");
-  const [bm,setBM] = useState(0)
+  const [image,setIM] = useState(String)
   const [timkiem,setTimkiem]= useState('')
   const [indexdd,setIndexdd] = useState(0)
   const [DStheodiadiem,setDStheodiadiem] = useState<Listingtype[]>([])
   const changediadiem = (dd:string)=>{
     setdiadiem(dd)
+  }
+  const getAPIuser= () =>{
+    axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+id)
+      .then(res=>{
+        setIM(res.data.image)
+      })
   }
   const getAPI=  (tendiadiem:string)=>{
      axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh')
@@ -84,8 +94,13 @@ const checktimkiem = ()=>{
   }
 
 }
+const profilescreen = ()=>{
+  console.log(username)
+  console.log(id)
+}
 useFocusEffect(
   React.useCallback(()=>{
+    getAPIuser()
     if(diadiems === 'All'){
       setDStheodiadiem([])
       getAPIall()
@@ -94,7 +109,7 @@ useFocusEffect(
     setDStheodiadiem([])
     getAPI(diadiems)
   }
-  },[diadiems||bm])
+  },[diadiems])
 )
     return(
       <>
@@ -102,8 +117,8 @@ useFocusEffect(
         headerTransparent: true,
         headerTitle:"",
         headerLeft:()=>(
-          <TouchableOpacity onPress={()=>{}} style={{marginTop:10,marginLeft:10}}>
-            <Image source={{uri:"https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-6/313862695_1816414778690214_2676876121728949586_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeElnuEG4EW0nXFFBuAZhOi9pejBMhjOm6ul6MEyGM6bq-HY7OykPyvg2UDg7Lnlh59UJJnjqH3wAvAWpU_nU_Ln&_nc_ohc=5_m7vUf74fUQ7kNvgEWWzSy&_nc_ht=scontent.fhan4-1.fna&oh=00_AYDYif3G_QnhXr8yFTU1AUJkkFr-_fLI-84fuCVQ8sfY0g&oe=66E33C65",}} 
+          <TouchableOpacity onPress={profilescreen} style={{marginTop:10,marginLeft:10}}>
+            <Image source={{uri:image,}} 
             style={{ width: 40, height: 40, borderRadius: 15 }}>
             </Image>
           </TouchableOpacity>
@@ -114,13 +129,15 @@ useFocusEffect(
             onPress={() => {}}
             style={{
               marginRight: 20,
+              marginTop:10,
               backgroundColor: Colors.white,
-              padding: 10,
+              padding: 8,
               borderRadius: 10,
               shadowColor: "#171717",
               shadowOffset: { width: 2, height: 4 },
               shadowOpacity: 0.2,
               shadowRadius: 3,
+              height:35,
             }}
           >
             <Ionicons name="notifications" size={20} color={Colors.black} />
@@ -138,12 +155,12 @@ useFocusEffect(
                 color={Colors.black} />
           <TextInput placeholder="Tìm nơi bạn muốn tới" onChangeText={text=>{setTimkiem(text)}} onSubmitEditing={checktimkiem}></TextInput>
           </View>
-          <TouchableOpacity onPress={() => {}} style={styles.filterBtn}>
+          {/* <TouchableOpacity onPress={() => {}} style={styles.filterBtn}>
               <Ionicons name="options" size={28} color={Colors.black} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
         <Danhsachbutton onDanhsachchanged={changediadiem} indexcheckdd={indexdd}></Danhsachbutton>
-        <DSphong listings={DStheodiadiem} diadiem={diadiems} ></DSphong>
+        <DSphong listings={DStheodiadiem} diadiem={id} ></DSphong>
         <GroupListings listings={groupData} />
       </View>
       </>
