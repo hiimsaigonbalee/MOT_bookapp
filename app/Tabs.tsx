@@ -26,7 +26,7 @@ const Tabs= ()=> {
       }}>
         <Tab.Screen
           component={Home}
-          initialParams={{username:username,id:String(id)}}
+          initialParams={{username:username,id:id}}
           name="Trang chủ"
           options={{
             tabBarIcon: ({color}) => (
@@ -37,7 +37,7 @@ const Tabs= ()=> {
         />
          <Tab.Screen
           component={profile}
-          initialParams={{username:username,id:String(id)}}
+          initialParams={{username:username,id:id}}
           name="Hồ Sơ"
           options={{
             tabBarIcon: ({color}) => (
@@ -48,7 +48,7 @@ const Tabs= ()=> {
         />
         <Tab.Screen
           component={Bookmarks}
-          initialParams={{username:username,id:String(id)}}
+          initialParams={{username:username,id:id}}
           name="BookMark"
           options={{
             tabBarIcon:({color}) => (
@@ -58,7 +58,7 @@ const Tabs= ()=> {
         />
          <Tab.Screen
           component={Historys}
-          initialParams={{username:username,id:String(id)}}
+          initialParams={{username:username,id:id}}
           name="Lịch Sử"
           options={{
             tabBarIcon: ({color}) => (

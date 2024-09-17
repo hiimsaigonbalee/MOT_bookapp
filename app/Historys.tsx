@@ -46,7 +46,7 @@ const getAPIHisuser=  ()=>{
         })
   })
   .catch(err =>{
-    Alert.alert('Thông Báo','Vui Lòng chờ trong giây lát')
+   return 0
   })
 }
 const getAPIhis= async (idphong:any)=>{
@@ -55,7 +55,7 @@ const getAPIhis= async (idphong:any)=>{
       setRoomhis((e:any)=>[...e,res.data])
   })
   .catch(err=>{
-    Alert.alert('Thông Báo','Vui Lòng chờ trong giây lát')
+    return 0
   })
 }
 useFocusEffect(

@@ -2,7 +2,7 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { memo, useEffect, useState,useLayoutEffect } from "react";
-import { View,Text,StyleSheet,Image, TouchableOpacity,FlatList } from "react-native";
+import { View,Text,StyleSheet,Image, TouchableOpacity,FlatList, Alert } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const ListBookmItem = ({item}:any)=>(
@@ -48,15 +48,22 @@ const Bookmarks = ()=>{
                 setListphong(res.data.bookmark)
                 setLoading(true)
               })
+              .catch(err =>{
+                Alert.alert('Thông Báo','Vui Lòng chờ trong giây lát')
+              })
       }
       const getAPIroom=  async (idphong:string)=>{
         await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/hinhanh/'+idphong)
         .then((res)=>{
             setFiltered((e:any)=>[...e,res.data])
         })
+        .catch(err =>{
+          Alert.alert('Thông Báo','Vui Lòng chờ trong giây lát')
+        })
       }
-getAPIuser()
+
 useLayoutEffect(()=>{
+  getAPIuser()
   console.log('render')
   if(Listp.length !=0){
     Listp.map((item:any)=>{
