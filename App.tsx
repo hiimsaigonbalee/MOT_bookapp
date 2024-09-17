@@ -3,7 +3,6 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import Home from "../Home";
 export default function Layout() {
   return (
     <Tabs

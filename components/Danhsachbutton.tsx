@@ -5,6 +5,7 @@ import diadiem from "@/data/diadiem";
 import { useRef,useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { memo } from "react";
 
 type Props = {
     onDanhsachchanged:(danhsach:string)=>void
@@ -52,7 +53,7 @@ const Danhsachbutton = ({onDanhsachchanged,indexcheckdd}:Props)=>{
         </View>
     )
 }
-export default Danhsachbutton
+export default memo(Danhsachbutton)
 
 const styles = StyleSheet.create({
     title: {
