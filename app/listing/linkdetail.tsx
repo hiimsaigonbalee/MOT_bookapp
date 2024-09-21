@@ -1,17 +1,21 @@
 import {
   Alert,
+  Button,
   Dimensions,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Listingtype } from "@/types/listingtype";
 import listingData from "@/data/hinhanh.json";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { RadioButton } from 'react-native-paper';
 import {
   Feather,
   FontAwesome,
@@ -27,6 +31,7 @@ import Animated, {
   useScrollViewOffset,
 } from "react-native-reanimated";
 import axios from "axios";
+import BookingPopup from "../Bookingpopup";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
@@ -49,36 +54,37 @@ const IMG_HEIGHT = 300;
   ]
 }
 
- 
 
 const ListingDetails = () => {
   const { idphong } = useLocalSearchParams(); //iduserphong
   const {id} = useLocalSearchParams()
+  const [booking,setBooking] = useState(false)
+  const [booking1,setBooking1] = useState(false)
   const listing:Listingtype | any = (listingData as Listingtype[]).find(
     (item) => item.id === id
   );
   const [lutru,setLuutru] = useState<Luttru>()
 
-  const bookphong = async ()=>{
-    var timedate = new Date()
-    console.log(1)
-    await axios.post('https://6641d7633d66a67b34352311.mockapi.io/api/todolist/checkin',{
-     idphong:id,
-     iduser:idphong,
-     date:`${timedate.getDate()}/${timedate.getUTCMonth()+1}/${timedate.getFullYear()}`,
-     madatphong:`${Math.floor(Math.random()*999999)+100000}`,
-     image:listing.image,
-     location:listing.location,
-     cost:listing.price
-    })
-    .then(res=>{
-      Alert.alert('Thong bao','Da dat Phong')
-    })
+  const bookphong = ()=>{
+    if(booking){
+      setBooking(false)
+      setBooking1(false)
+    }
+    else{
+       setBooking(true)
+       setTimeout(()=>{
+        setBooking1(true)
+       },530)
+    }
+   
   }
   const getAPIcheckbookmark =  async ()=>{
     const a = await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+idphong)
     .then(res=>{
         setLuutru(res.data)
+    })
+    .catch(err=>{
+      return 0
     })
     }
   const checkbookmark = ()=>{
@@ -91,6 +97,9 @@ const ListingDetails = () => {
       })
       .then(res=>{
         Alert.alert('Thông báo','Đã thêm Vào Bookmark')
+      })
+      .catch(err=>{
+        return 0
       })
     }
     else{
@@ -199,7 +208,7 @@ const ListingDetails = () => {
                   <Ionicons name="time" size={18} color={Colors.primaryColor} />
                 </View>
                 <View>
-                  <Text style={styles.highlightTxt}>Duration</Text>
+                  <Text style={styles.highlightTxt}>Ngày</Text>
                   <Text style={styles.highlightTxtVal}>
                     {listing.duration} Days
                   </Text>
@@ -215,7 +224,7 @@ const ListingDetails = () => {
                 </View>
                 <View>
                   <Text style={styles.highlightTxt}>Person</Text>
-                  <Text style={styles.highlightTxtVal}>{listing.duration}</Text>
+                  <Text style={styles.highlightTxtVal}>{listing.person}</Text>
                 </View>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -247,11 +256,18 @@ const ListingDetails = () => {
           <Text style={styles.footerBtnTxt}>${listing.price}</Text>
         </TouchableOpacity>
       </Animated.View>
+      {booking&& <BookingPopup iduser={idphong} idphong={id}></BookingPopup>}
+      {booking1&&
+        <TouchableOpacity onPress={bookphong} style={styles.closeButton}>
+          <Text style={styles.closeText}>Đóng</Text>
+        </TouchableOpacity>
+      }
+       
     </>
   );
 }
 
-export default ListingDetails;
+export default memo(ListingDetails);
 
 const styles = StyleSheet.create({
   container: {
@@ -335,5 +351,61 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textTransform: "uppercase",
+  },
+  containerpopup: {
+    justifyContent:'center',
+    alignItems: 'center',
+    display:'flex',
+    marginBottom:200
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+  dateButton: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    marginTop: 20,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  closeButton: {
+    position:'absolute',
+    display:'flex',
+    height:30,
+    left:150,
+    bottom:10,
+    padding: 5,
+    backgroundColor: '#ff5c5c',
+    borderRadius: 5,
+    width:100,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  closeText: {
+    color: 'white',
+    fontSize:15,
   },
 });

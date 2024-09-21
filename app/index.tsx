@@ -1,6 +1,6 @@
 import { router, Stack,Link } from 'expo-router';
 import * as React from 'react';
-import { useEffect, useState,useLayoutEffect } from 'react';
+import { useEffect, useState,useLayoutEffect, memo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
-export default function Example() {
+
+const  Index=()=> {
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -23,35 +24,37 @@ export default function Example() {
   });
   const [check,setChecks] =useState(0)
   const [check1,setCheck1s] =useState(0)
+  const [user,setUser] = useState<any>([])
+
+  const getAPIuser=()=>{
+    axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user')
+    .then((res)=>{
+        setUser(res.data)
+    })
+  }
   const setID = (id:string)=>{
     setForm({...form,id})
   }
   const handleSignin=  ()=>{
-     axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user')
-    .then(res=>{
-      res.data.map((item:any)=>{
-          if(item.username==form.email && item.password==form.password){
-            setID(item.id)
+      for(let i=0;i<user.length;i++){
+          if(user[i].username ==form.email && user[i].password == form.password){
             setChecks(1)
+            setID(user[i].id)
+            return 0
           }
-          else{
-            setCheck1s(1)
-          }
-      })
-    })
-    .catch(err=>{Alert.alert('Thong bao','Vui long cho trong giay lat')})
- 
-  }
+      }
+      setChecks(2)
+    }
+
   const Signup = ()=>{
-    router.navigate('./signup')
+    router.navigate('./Signup')
   }
-  useEffect(()=>{
+  useLayoutEffect(()=>{
+    getAPIuser()
      if(check == 1){
           router.replace({pathname:'./Tabs',params:{username:form.email,id:form.id}} )
-          console.log(form.id)
           }
-          
-      if(check == 0 && check1 == 1){
+      if(check == 2){
         Alert.alert('Thông báo','Mật Khẩu hoặc Tài Khoản Không đúng')
         setCheck1s(0)
         }
@@ -84,7 +87,7 @@ export default function Example() {
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={email => setForm({ ...form, email })}
-                placeholder="minhquanlekim@example.com"
+                placeholder="minhquanlekim"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 value={form.email} />
@@ -128,6 +131,7 @@ export default function Example() {
     </>
   );
 }
+export default memo(Index) 
 
 const styles = StyleSheet.create({
   container: {

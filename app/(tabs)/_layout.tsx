@@ -54,14 +54,14 @@ export default function Layout() {
           ),
         }}
       /> */}
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="bookmarks"
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="bookmark" size={28} color={color} />
           ),
         }}
-      />
+      /> */}
       {/* <Tabs.Screen
         name="profile"
         options={{

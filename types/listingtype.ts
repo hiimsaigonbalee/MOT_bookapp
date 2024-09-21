@@ -1,12 +1,15 @@
+import { Float } from "react-native/Libraries/Types/CodegenTypes";
+
  export interface Listingtype {
   id: string;
-  name: string;
   image: string;
+  name: string;
   description: string;
-  rating: number;
+  rating: string;
   price: string;
   duration: string;
   location: string;
+  person:string;
   category: string;
   bookmark:boolean;
 }

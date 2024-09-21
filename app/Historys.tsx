@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { memo, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Animated } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const BookingItem = ({item}:any) => (
   <>
@@ -13,12 +14,12 @@ const BookingItem = ({item}:any) => (
   <View style={styles.bookingItem} key={item.idphong}>
     <View style={styles.bookingHeader}>
       <Text style={styles.dateText}>{item.date}</Text>
-      <Text style={styles.timeText}>{item.time}</Text>
+      <Text style={styles.timeText}>{item.Hourorder}</Text>
     </View>
-    <Text style={styles.statusBadge}>{item.status}</Text>
+    <Animated.Image style={styles.statusBadge} source={{ uri: item.image }}></Animated.Image>
     <Text style={styles.bookingCode}>Mã đặt phòng: {item.madatphong}</Text>
-    <Text style={styles.hotelName}>{item.hotelName}</Text>
-    <Text style={styles.stayType}>{item.stayType}</Text>
+    <Text style={styles.hotelName}>{item.name}</Text>
+    <Text style={styles.stayType}>{item.timecheckin}  -  {item.timecheckout}</Text>
     <View style={styles.priceContainer}>
       <Icon name="money" type="font-awesome" color="#A00000" size={16} />
       <Text style={styles.price}>{item.cost}</Text>
@@ -35,7 +36,6 @@ const BookingItem = ({item}:any) => (
 const  Historys =()=>{
 const {id} =useLocalSearchParams()
 const [his,setHis]=useState<any>([])
-const [roomHis,setRoomhis] = useState<any>([])
 const getAPIHisuser=  ()=>{
    axios.get('https://6641d7633d66a67b34352311.mockapi.io/api/todolist/checkin')
   .then(res=>{
@@ -49,25 +49,10 @@ const getAPIHisuser=  ()=>{
    return 0
   })
 }
-const getAPIhis= async (idphong:any)=>{
-  await axios.get('https://66dbfa2047d749b72aca6935.mockapi.io/webappsale/user/'+idphong)
-  .then(res=>{
-      setRoomhis((e:any)=>[...e,res.data])
-  })
-  .catch(err=>{
-    return 0
-  })
-}
 useFocusEffect(
   React.useCallback(()=>{
-    console.log('render')
     setHis([])
     getAPIHisuser()
-    if(his.length !=0){
-      his.map((item:any)=>{
-        getAPIhis(item.idphong)
-      })
-  }
   },[])
 )
 
@@ -78,9 +63,6 @@ useFocusEffect(
         contentContainerStyle={styles.listContainer}
         showsHorizontalScrollIndicator={false}
       />
-    // <View>
-    //   <Text>sdadas</Text>
-    // </View>
   );
 }
 
@@ -114,6 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
+    marginTop:25,
   },
   bookingHeader: {
     flexDirection: 'row',
@@ -125,22 +108,24 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
-    color: '#999',
+    color: 'black',
+    fontWeight: 'bold'
   },
   statusBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E0E0E0',
-    color: '#000',
     paddingVertical: 4,
     paddingHorizontal: 10,
     borderRadius: 5,
-    fontSize: 12,
     marginTop: 5,
     marginBottom: 10,
+    marginLeft:8,
+    width:350,
+    height:150,
   },
   bookingCode: {
-    fontSize: 14,
+    fontSize: 18,
     marginBottom: 5,
+    fontWeight:'600'
   },
   hotelName: {
     fontSize: 16,

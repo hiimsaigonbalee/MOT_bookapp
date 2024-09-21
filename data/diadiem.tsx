@@ -16,7 +16,7 @@ const diadiem = [
       iconName: "city"
     },
     {
-      title: "Sapa",
+      title: "Sa Pa",
       iconName: "tree"
     },
     {

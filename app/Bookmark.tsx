@@ -36,7 +36,6 @@ const ListBookmItem = ({item}:any)=>(
     </>
   
       )
-
 const Bookmarks = ()=>{
     const {id} = useLocalSearchParams()
     const [Listp,setListphong] = useState<any>([])
@@ -62,15 +61,17 @@ const Bookmarks = ()=>{
         })
       }
 
-useLayoutEffect(()=>{
+useFocusEffect(
+  React.useCallback(()=>{
   getAPIuser()
+  setFiltered([])
   console.log('render')
   if(Listp.length !=0){
     Listp.map((item:any)=>{
     getAPIroom(item.idphong)})
   }
 },[loading])
-
+)
 
 return(
       <FlatList 
@@ -89,7 +90,8 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor:'white'
+        backgroundColor:'white',
+        marginTop:10,
     },
     itemLocationTxt: {
         fontSize: 12,
@@ -132,7 +134,4 @@ const styles = StyleSheet.create({
         marginBottom: 10,
       },
 })
-function useLayouEffect(arg0: () => void, p0: never[]) {
-  throw new Error("Function not implemented.");
-}
 
