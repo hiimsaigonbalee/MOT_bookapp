@@ -1,41 +1,30 @@
 import axios from 'axios';
-import { Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, { memo, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, Animated, Button, Modal } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-
-const BookingItem = ({item}:any) => (
-  <>
-  <Stack.Screen options={{
-     headerTransparent: true,
-        headerTitle:"",}} key={item.madatphong}>
-  </Stack.Screen>
-  <View style={styles.bookingItem} key={item.idphong}>
-    <View style={styles.bookingHeader}>
-      <Text style={styles.dateText}>{item.date}</Text>
-      <Text style={styles.timeText}>{item.Hourorder}</Text>
-    </View>
-    <Animated.Image style={styles.statusBadge} source={{ uri: item.image }}></Animated.Image>
-    <Text style={styles.bookingCode}>Mã đặt phòng: {item.madatphong}</Text>
-    <Text style={styles.hotelName}>{item.name}</Text>
-    <Text style={styles.stayType}>{item.timecheckin}  -  {item.timecheckout}</Text>
-    <View style={styles.priceContainer}>
-      <Icon name="money" type="font-awesome" color="#A00000" size={16} />
-      <Text style={styles.price}>{item.cost}</Text>
-    </View>
-    <TouchableOpacity style={styles.reviewButton}>
-      <Text style={styles.reviewButtonText}>Đánh giá</Text>
-    </TouchableOpacity>
-  </View>
-  </>
-  
-);
-
+import AntDesign from '@expo/vector-icons/AntDesign';
   var dem:number = 0
 const  Historys =()=>{
 const {id} =useLocalSearchParams()
 const [his,setHis]=useState<any>([])
+const [alearDel,setalertDel] = useState(false)
+
+const deleteHistory = async (id:string)=>{
+    await axios.delete('https://6641d7633d66a67b34352311.mockapi.io/api/todolist/checkin/'+id)
+    .then((res)=>{
+      setalertDel(true)
+    })
+    .catch(err=>{
+      return 0
+    })
+}
+const cleardel =()=>{
+  setalertDel(false)
+  setHis([])
+  getAPIHisuser()
+}
 const getAPIHisuser=  ()=>{
    axios.get('https://6641d7633d66a67b34352311.mockapi.io/api/todolist/checkin')
   .then(res=>{
@@ -56,6 +45,51 @@ useFocusEffect(
   },[])
 )
 
+const BookingItem = ({item}:any) => (
+  <>
+    <>
+  <Stack.Screen options={{
+     headerTransparent: true,
+        headerTitle:"",}} key={item.madatphong}>
+  </Stack.Screen>
+  <View style={styles.bookingItem} key={item.idphong}>
+    <View style={styles.bookingHeader}>
+      <Text style={styles.dateText}>{item.date}</Text>
+      <Text style={styles.timeText}>{item.Hourorder}</Text>
+    </View>
+    <Animated.Image style={styles.statusBadge} source={{ uri: item.image}}></Animated.Image>
+    <Text style={styles.bookingCode}>Mã đặt phòng: {item.madatphong}</Text>
+    <Text style={styles.hotelName}>{item.name}</Text>
+    <Text style={styles.stayType}>{item.timecheckin}  -  {item.timecheckout}</Text>
+    <View style={styles.priceContainer}>
+      <Icon name="money" type="font-awesome" color="#A00000" size={16} />
+      <Text style={styles.price}>{item.cost}</Text>
+    </View>
+      <TouchableOpacity style={styles.delete} onPress={()=>{deleteHistory(item.id)}}>
+      <AntDesign name="delete" size={24} color="black" style={styles.deleteicon} />
+      </TouchableOpacity>
+    <TouchableOpacity style={styles.reviewButton}>
+      <Text style={styles.reviewButtonText}>Đánh giá</Text>
+    </TouchableOpacity>
+  </View>
+  </>
+    {alearDel&&
+    <>
+      <View style={[styles.container1,{opacity:0.9}]}></View>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Thông Báo!</Text>
+          <Text style={styles.modalText}>
+            Đã Xóa Lịch Sử
+          </Text>
+          <Button title="Okay" onPress={cleardel} />
+        </View>
+    </>
+}
+  </>
+
+  
+);
+
   return (
       <FlatList
         data={his}
@@ -73,6 +107,43 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F3F3F3',
   },
+  container1: {
+    position:'absolute',
+    flex: 1,
+    backgroundColor: 'white',
+    width:500,
+    height:500,
+  },
+  delete:{
+    alignItems:'flex-end',
+    marginBottom:15,
+  },
+  modalContent: {
+    display:'flex',
+    position:'relative',
+    bottom:150,
+    zIndex:1,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  deleteicon:{
+    backgroundColor:'red',
+    borderRadius:10,
+    padding:10
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -83,6 +154,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
+
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',

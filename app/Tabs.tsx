@@ -10,7 +10,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import profile from "./profile";
+import UserProfile from './Profile'
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import Historys from "./Historys";
 
@@ -48,7 +48,7 @@ const Tabs = () => {
           }}
         />
         <Tab.Screen
-          component={profile}
+          component={UserProfile}
           initialParams={{ username: username, id: id }}
           name="Hồ Sơ"
           options={{

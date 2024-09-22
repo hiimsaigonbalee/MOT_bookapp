@@ -56,13 +56,6 @@ useFocusEffect(
       </View>
 
       {/* Menu Items */}
-      <View style={styles.menuItem}>
-        <TouchableOpacity style={styles.menuButton}>
-          <Icon name="map-marker" type="font-awesome" color="#000" />
-          <Text style={styles.menuText}>Cập Nhật Khu Vực</Text>
-          <Icon name="chevron-right" type="feather" color="#000" />
-        </TouchableOpacity>
-      </View>
 
       <View style={styles.menuItem}>
         <TouchableOpacity style={styles.menuButton}>

@@ -20,15 +20,12 @@ const Danhsachbutton = ({onDanhsachchanged,indexcheckdd}:Props)=>{
         const selected = itemRef.current[index] ;
         indexcheckdd = index
         setCheckdd(indexcheckdd)
-        selected?.measure((x) => {
-            scrollRef.current?.scrollTo({ x:x, y: 0, animated: true });
-          });
-          onDanhsachchanged(diadiem[index].title)
+        onDanhsachchanged(diadiem[index].title)
     }
     useEffect(()=>{
         setCheckdd(indexcheckdd)
         console.log(checkdd)
-    },[indexcheckdd])
+    },[])
     return( 
         <View>
             <Text style={styles.title}> Khách Sạn và Homestay</Text>

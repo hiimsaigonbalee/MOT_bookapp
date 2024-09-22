@@ -14,8 +14,6 @@ import React, { memo, useEffect, useState } from "react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Listingtype } from "@/types/listingtype";
 import listingData from "@/data/hinhanh.json";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { RadioButton } from 'react-native-paper';
 import {
   Feather,
   FontAwesome,
