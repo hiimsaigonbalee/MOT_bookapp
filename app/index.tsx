@@ -1,4 +1,4 @@
-import { router, Stack,Link } from 'expo-router';
+import { router, Stack,Link, useFocusEffect } from 'expo-router';
 import * as React from 'react';
 import { useEffect, useState,useLayoutEffect, memo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -37,10 +37,13 @@ const  Index=()=> {
   }
   const handleSignin=  ()=>{
       for(let i=0;i<user.length;i++){
-          if(user[i].username ==form.email && user[i].password == form.password){
-            setChecks(1)
-            setID(user[i].id)
-            return 0
+          if(user[i].username == form.email && user[i].password == form.password){
+            router.replace({pathname:'./Tabs',params:{username:form.email,id:user[i].id}})
+            break
+          }
+          else{
+            Alert.alert('Thông báo','Mật Khẩu hoặc Tài Khoản Không đúng')
+            setCheck1s(0)
           }
       }
       setChecks(2)
@@ -49,16 +52,11 @@ const  Index=()=> {
   const Signup = ()=>{
     router.navigate('./Signup')
   }
-  useLayoutEffect(()=>{
+  useFocusEffect(
+    React.useCallback(()=>{
     getAPIuser()
-     if(check == 1){
-          router.replace({pathname:'./Tabs',params:{username:form.email,id:form.id}} )
-          }
-      if(check == 2){
-        Alert.alert('Thông báo','Mật Khẩu hoặc Tài Khoản Không đúng')
-        setCheck1s(0)
-        }
   },[check || check1])
+)
   return (
     <>
      <Stack.Screen options={{
@@ -74,9 +72,7 @@ const  Index=()=> {
               alt="App Logo"
               resizeMode="contain"
               style={styles.headerImg}
-              source={{
-                uri: 'https://ot49.dlfl.me/687e45608f505d0e0441/7784118149953484560',
-              }} />
+              source={require('../assets/images/logo.png')} />
           </View>
           <View style={styles.form}>
             <View style={styles.input}>
